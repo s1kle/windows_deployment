@@ -1,0 +1,7 @@
+#* Creating directory for package .msi/.exe files
+#! Specify the 'path' variable (outside w/ 'var.path' key or directly inside the task)
+
+- name: Create directory
+  ansible.windows.win_file:
+    path: "{{ path }}"
+    state: directory

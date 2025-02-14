@@ -1,0 +1,8 @@
+#* Installing package online with chocolatey
+#! Specify the 'packages' variable (outside w/ 'var.packages' key or directly inside the task)
+
+- name: Install packages
+  chocolatey.chocolatey.win_chocolatey:
+    name: "{{ item.name }}"
+    state: present
+  loop: "{{ packages }}"

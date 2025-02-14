@@ -1,0 +1,47 @@
+#* Disabling some stuff for default user
+#! Specify the 'user' variable (outside w/ 'var.user' key or here by changing {{user}} to username you need)
+
+- name: Disable Control Panel and Settings for user
+  ansible.windows.win_regedit:
+    hive: "C:/Users/{{ user }}/NTUSER.DAT"
+    path: HKLM:\ANSIBLE\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    name: NoControlPanel
+    data: 1
+    type: dword
+    state: present
+
+- name: Disable command prompt
+  ansible.windows.win_regedit:
+    hive: "C:/Users/{{ user }}/NTUSER.DAT"
+    path: HKLM:\ANSIBLE\Software\Policies\Microsoft\Windows\System
+    name: DisableCMD
+    data: 1
+    type: dword
+    state: present
+
+- name: Add DisallowRun key
+  ansible.windows.win_regedit:
+    hive: "C:/Users/{{ user }}/NTUSER.DAT"
+    path: HKLM:\ANSIBLE\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    name: DisallowRun
+    data: 1
+    type: dword
+    state: present
+
+- name: Disallow Powershell (powershell.exe)
+  ansible.windows.win_regedit:
+    hive: "C:/Users/{{ user }}/NTUSER.DAT"
+    path: HKLM:\ANSIBLE\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun
+    name: 1
+    type: string
+    data: powershell.exe
+    state: present
+
+- name: Disable Registry Editor for user
+  ansible.windows.win_regedit:
+    hive: "C:/Users/{{ user }}/NTUSER.DAT"
+    path: HKLM:\ANSIBLE\Software\Microsoft\Windows\CurrentVersion\Policies\System
+    name: DisableRegistryTools
+    data: 1
+    type: dword
+    state: present

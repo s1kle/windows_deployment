@@ -1,0 +1,14 @@
+#* Downloading packages from ftp server
+#! Specify the 'path' variable (outside w/ 'var.path' key or directly inside the task)
+#! Specify the 'url' variable (outside w/ 'var.url' key or directly inside the task)
+#! Specify the 'user' variable (outside w/ 'var.user' key or directly inside the task)
+#! Specify the 'password' variable (outside w/ 'var.password' key or directly inside the task)
+#! Specify the 'packages' variable (outside w/ 'var.packages' key or directly inside the task)
+
+- name: Download packages
+  ansible.windows.win_get_url:
+    url: "{{ url }}/{{ item.file_name }}"
+    dest: "{{ path }}/{{ item.file_name }}"
+    url_username: "{{ user }}"
+    url_password: "{{ password }}"
+  loop: "{{ packages }}"

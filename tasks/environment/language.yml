@@ -1,0 +1,37 @@
+#* This is default values for Russian language support
+
+- name: Set the region format to Russian
+  community.windows.win_region:
+    format: ru-RU
+    location: 203
+    unicode-language: ru-RU
+    copy_settings: true
+
+#? Havent checked if these 4 are necessary when the first one succeed
+- name: Change language for non-unicode programs (ACP)
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Nls\CodePage
+    name: ACP
+    data: 1251
+    state: present
+
+- name: Change language for non-unicode programs (OEMCP)
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Nls\CodePage
+    name: OEMCP
+    data: 866
+    state: present
+
+- name: Change encoding language (Default)
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Nls\Language
+    name: Default
+    data: 0419
+    state: present
+
+- name: Change encoding language (InstallLanguage)
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Nls\Language
+    name: InstallLanguage
+    data: 0419
+    state: present

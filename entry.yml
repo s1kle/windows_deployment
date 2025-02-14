@@ -1,0 +1,62 @@
+- name: Entry point
+  hosts: windows
+  vars_files: [args.yml, packages.yml]
+
+  tasks:
+    - name: Environment setup
+      block:
+        - name: Remove startup delay for WinRM service
+          ansible.builtin.include_tasks: tasks/environment/winrm_delay.yml
+
+        - name: Language setup
+          ansible.builtin.include_tasks: tasks/environment/language.yml
+          vars:
+            user: "{{ username }}"
+            admin: "{{ admin_username }}"
+
+        - name: User setup
+          ansible.builtin.include_tasks: tasks/environment/users.yml
+
+        - name: Restrictions setup
+          ansible.builtin.include_tasks: tasks/environment/restrictions.yml
+          vars:
+            user: "{{ username }}"
+
+    - name: Reboot
+      ansible.builtin.include_tasks: tasks/utils/reboot.yml
+
+    - name: Package setup
+      block:
+        - name: Create directory
+          ansible.builtin.include_tasks: tasks/packages/directory.yml
+          vars:
+            path: "{{ local_path }}"
+
+        - name: Download packages
+          ansible.builtin.include_tasks: tasks/packages/download.yml
+          vars:
+            url: "{{ ftp.url }}"
+            user: "{{ ftp.user }}"
+            password: "{{ ftp.password }}"
+            path: "{{ local_path }}"
+            packages: "{{ to_download }}"
+
+        - name: Install win_package packages
+          ansible.builtin.include_tasks: tasks/packages/win_package.yml
+          vars:
+            path: "{{ local_path }}"
+            packages: "{{ win_package }}"
+
+        - name: Install win_powershell packages
+          ansible.builtin.include_tasks: tasks/packages/win_powershell.yml
+          vars:
+            path: "{{ local_path }}"
+            packages: "{{ win_powershell }}"
+
+      # - name: Install win_chocolatey packages
+      #   ansible.builtin.include_tasks: tasks/packages/win_chocolatey.yml
+      #   vars:
+      #     packages: "{{ win_chocolatey }}"
+
+    - name: Final reboot
+      ansible.builtin.include_tasks: tasks/utils/reboot.yml

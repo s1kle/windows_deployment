@@ -1,0 +1,35 @@
+#* Installing package offline with win_powershell module
+#! Specify the 'path' variable (outside w/ 'var.path' key or directly inside the task)
+#! Specify the 'packages' variable (outside w/ 'var.packages' key or directly inside the task)
+
+- name: Unzip packages
+  ansible.windows.win_powershell:
+    chdir: "{{ path }}"
+    script: |
+      [CmdletBinding()]
+      param (
+        [String]$Path,
+        [String]$DestinationPath
+      )
+
+      Expand-Archive -Path $Path -DestinationPath $DestinationPath
+    parameters:
+      Path: "{{ item.file_name }}"
+      DestinationPath: "{{ path }}"
+  loop: "{{ packages }}"
+
+- name: Install packages
+  ansible.windows.win_powershell:
+    chdir: "{{ path }}/{{ item.name }}"
+    script: |
+      [CmdletBinding()]
+      param (
+        [String]$File,
+        [String]$Arguments
+      )
+
+      Powershell.exe -ExecutionPolicy Bypass -File $File $Arguments
+    parameters:
+      File: "{{ item.script_file }}"
+      Arguments: "{{ item.script_arguments }}"
+  loop: "{{ packages }}"

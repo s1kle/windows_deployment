@@ -1,0 +1,10 @@
+#* Installing package offline with win_package module
+#! Specify the 'path' variable (outside w/ 'var.path' key or directly inside the task)
+#! Specify the 'packages' variable (outside w/ 'var.packages' key or directly inside the task)
+
+- name: Install packages
+  ansible.windows.win_package:
+    path: "{{ path }}/{{ item.file_name }}"
+    arguments: "{{ item.arguments }}"
+    state: present
+  loop: "{{ packages }}"

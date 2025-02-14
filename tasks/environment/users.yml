@@ -1,0 +1,23 @@
+#* Ensure users w/ their profiles are created
+#! Specify the 'user' variable (outside w/ 'var.user' key or directly inside the task)
+#! Specify the 'admin' variable (outside w/ 'var.admin' key or directly inside the task)
+
+- name: Ensure user created
+  ansible.windows.win_user:
+    name: "{{ user }}"
+    state: present
+
+- name: Ensure admin created
+  ansible.windows.win_user:
+    name: "{{ admin }}"
+    state: present
+
+- name: Create user profile
+  ansible.windows.win_user_profile:
+    username: "{{ user }}"
+    state: present
+
+- name: Create admin profile
+  ansible.windows.win_user_profile:
+    username: "{{ admin }}"
+    state: present

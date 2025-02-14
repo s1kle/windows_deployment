@@ -1,0 +1,4 @@
+#* Just client reboot...
+
+- name: Reboot computer
+  ansible.windows.win_reboot:
