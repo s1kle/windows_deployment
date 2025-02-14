@@ -1,6 +1,6 @@
 - name: Entry point
   hosts: windows
-  vars_files: [args.yml, packages.yml]
+  vars_files: [environment.yml]
 
   tasks:
     - name: Environment setup
@@ -39,24 +39,24 @@
             user: "{{ ftp.user }}"
             password: "{{ ftp.password }}"
             path: "{{ local_path }}"
-            packages: "{{ all | dict2items }}"
+            packages: "{{ pkgs | dict2items }}"
 
         - name: Install win_package packages
           ansible.builtin.include_tasks: tasks/packages/win_package.yml
           vars:
             path: "{{ local_path }}"
-            packages: "{{ all | dict2items }}"
+            packages: "{{ pkgs | dict2items }}"
 
         - name: Install win_powershell packages
           ansible.builtin.include_tasks: tasks/packages/win_powershell.yml
           vars:
             path: "{{ local_path }}"
-            packages: "{{ all | dict2items }}"
+            packages: "{{ pkgs | dict2items }}"
 
         - name: Install win_chocolatey packages
           ansible.builtin.include_tasks: tasks/packages/win_chocolatey.yml
           vars:
-            packages: "{{ all | dict2items }}"
+            packages: "{{ pkgs | dict2items }}"
 
     - name: Final reboot
       ansible.builtin.include_tasks: tasks/utils/reboot.yml
