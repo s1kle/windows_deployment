@@ -3,6 +3,9 @@
 
 - name: Install packages
   chocolatey.chocolatey.win_chocolatey:
-    name: "{{ item.name }}"
+    name: "{{ item.key }}"
     state: present
   loop: "{{ packages }}"
+  when:
+    - item.value.checked
+    - item.value.type == 'win_chocolatey'

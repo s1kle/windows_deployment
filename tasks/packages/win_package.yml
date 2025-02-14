@@ -4,7 +4,10 @@
 
 - name: Install packages
   ansible.windows.win_package:
-    path: "{{ path }}/{{ item.file_name }}"
-    arguments: "{{ item.arguments }}"
+    path: "{{ path }}/{{ item.value.file }}"
+    arguments: "{{ item.value.arguments }}"
     state: present
   loop: "{{ packages }}"
+  when:
+    - item.value.checked
+    - item.value.type == 'win_package'

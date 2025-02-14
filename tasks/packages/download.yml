@@ -7,8 +7,9 @@
 
 - name: Download packages
   ansible.windows.win_get_url:
-    url: "{{ url }}/{{ item.file_name }}"
-    dest: "{{ path }}/{{ item.file_name }}"
+    url: "{{ url }}/{{ item.value.file }}"
+    dest: "{{ path }}/{{ item.value.file }}"
     url_username: "{{ user }}"
     url_password: "{{ password }}"
   loop: "{{ packages }}"
+  when: item.value.checked

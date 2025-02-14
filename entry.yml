@@ -39,24 +39,24 @@
             user: "{{ ftp.user }}"
             password: "{{ ftp.password }}"
             path: "{{ local_path }}"
-            packages: "{{ to_download }}"
+            packages: "{{ all | dict2items }}"
 
         - name: Install win_package packages
           ansible.builtin.include_tasks: tasks/packages/win_package.yml
           vars:
             path: "{{ local_path }}"
-            packages: "{{ win_package }}"
+            packages: "{{ all | dict2items }}"
 
         - name: Install win_powershell packages
           ansible.builtin.include_tasks: tasks/packages/win_powershell.yml
           vars:
             path: "{{ local_path }}"
-            packages: "{{ win_powershell }}"
+            packages: "{{ all | dict2items }}"
 
-      # - name: Install win_chocolatey packages
-      #   ansible.builtin.include_tasks: tasks/packages/win_chocolatey.yml
-      #   vars:
-      #     packages: "{{ win_chocolatey }}"
+        - name: Install win_chocolatey packages
+          ansible.builtin.include_tasks: tasks/packages/win_chocolatey.yml
+          vars:
+            packages: "{{ all | dict2items }}"
 
     - name: Final reboot
       ansible.builtin.include_tasks: tasks/utils/reboot.yml

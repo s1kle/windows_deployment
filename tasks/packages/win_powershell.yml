@@ -14,13 +14,16 @@
 
       Expand-Archive -Path $Path -DestinationPath $DestinationPath
     parameters:
-      Path: "{{ item.file_name }}"
+      Path: "{{ item.value.file }}"
       DestinationPath: "{{ path }}"
   loop: "{{ packages }}"
+  when:
+    - item.checked
+    - item.type == 'win_powershell'
 
 - name: Install packages
   ansible.windows.win_powershell:
-    chdir: "{{ path }}/{{ item.name }}"
+    chdir: "{{ path }}/{{ item.key }}"
     script: |
       [CmdletBinding()]
       param (
@@ -30,6 +33,9 @@
 
       Powershell.exe -ExecutionPolicy Bypass -File $File $Arguments
     parameters:
-      File: "{{ item.script_file }}"
-      Arguments: "{{ item.script_arguments }}"
+      File: "{{ item.value.script }}"
+      Arguments: "{{ item.value.arguments }}"
   loop: "{{ packages }}"
+  when:
+    - item.value.checked
+    - item.value.type == 'win_powershell'
