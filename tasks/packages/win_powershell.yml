@@ -3,28 +3,24 @@
 #! Specify the 'packages' variable (outside w/ 'var.packages' key or directly inside the task)
 
 - name: Unzip packages
-  ansible.windows.win_powershell:
+  ansible.windows.win_shell: "Expand-Archive -Path {{ item.value.file }} -DestinationPath {{ path }}"
+  args:
     chdir: "{{ path }}"
-    script: |
-      [CmdletBinding()]
-      param (
-        [String]$Path,
-        [String]$DestinationPath
-      )
-
-      Expand-Archive -Path $Path -DestinationPath $DestinationPath
-    parameters:
-      Path: "{{ item.value.file }}"
-      DestinationPath: "{{ path }}"
   loop: "{{ packages }}"
+  loop_control:
+    label: "{{ item.key }}"
   when:
     - item.value.checked
     - item.value.type == 'win_powershell'
+
+#* Scripts in environment.yml looks like: .\Install.ps1 -Arg1 Value
 - name: Install packages
   ansible.windows.win_shell: "{{ item.value.script }}"
   args:
     chdir: "{{ path }}/{{ item.key }}"
   loop: "{{ packages }}"
+  loop_control:
+    label: "{{ item.key }}"
   when:
     - item.value.checked
     - item.value.type == 'win_powershell'

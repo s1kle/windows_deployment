@@ -8,6 +8,8 @@
     arguments: "{{ item.value.arguments }}"
     state: present
   loop: "{{ packages }}"
+  loop_control:
+    label: "{{ item.key }}"
   when:
     - item.value.checked
     - item.value.type == 'win_package'

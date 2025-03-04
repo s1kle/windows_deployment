@@ -3,7 +3,7 @@ from pathlib import Path
 import subprocess
 import questionary as q
 
-from utils import get_ips, ping, default_subnet, default_end, default_start, load_yaml, save_yaml
+from utils import get_ips, ping, default_subnet, default_end, default_start, default_choise, load_yaml, save_yaml
 
 
 inventory_file = Path(__file__).parent / 'inventory.yml'
@@ -28,6 +28,15 @@ save_yaml(inventory_file, inventory)
 
 print('Загрузка', environment_file)
 environment = load_yaml(environment_file)
+
+wifi = environment['wifi']
+choise = q.text(f'Сменить wifi (Текущий: {wifi['ssid']}) y/n?', default_choise)
+if choise == 'y':
+    new_ssid = q.text('SSID: ')
+    new_password = q.text('Password: ')
+    environment['wifi']['ssid'] = new_ssid
+    environment['wifi']['password'] = new_password
+
 
 package_names = list(environment['pkgs'].keys())
 package_choices = [q.Choice(item, checked=True) for item in package_names]

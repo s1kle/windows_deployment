@@ -1,4 +1,10 @@
-- name: Disable Control Panel and Settings for user
+#* Connects to a specified wifi
+#! Specify the 'wifi_ssid' variable (outside w/ 'var.wifi_ssid' key or directly inside the task)
+#! Specify the 'wifi_password' variable (outside w/ 'var.wifi_password' key or directly inside the task)
+
+#? AI generated tasks.
+
+- name: Enable Location Services Permission
   ansible.windows.win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
     name: Value

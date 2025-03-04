@@ -1,5 +1,6 @@
 - name: Entry point
   hosts: windows
+  display_skipped_hosts: false
   vars_files: [environment.yml]
 
   tasks:

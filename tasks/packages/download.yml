@@ -12,4 +12,6 @@
     url_username: "{{ user }}"
     url_password: "{{ password }}"
   loop: "{{ packages }}"
+  loop_control:
+    label: "{{ item.key }}"
   when: item.value.checked
