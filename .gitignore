@@ -4,3 +4,4 @@
 inventory.yml
 environment.yml
 __pycache__
+*.bak

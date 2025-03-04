@@ -1,0 +1,49 @@
+- name: Disable Control Panel and Settings for user
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
+    name: Value
+    data: Allow
+    state: present
+
+- name: Ensure Wi-Fi profile is present
+  win_shell: |
+    $ssid = "{{ wifi_ssid }}"
+    $password = "{{ wifi_password }}"
+    $profileXml = @"
+    <WLANProfile xmlns="http://www.microsoft.com/networking/WLAN/profile/v1">
+      <name>$ssid</name>
+      <SSIDConfig>
+        <SSID>
+          <name>$ssid</name>
+        </SSID>
+      </SSIDConfig>
+      <connectionType>ESS</connectionType>
+      <connectionMode>auto</connectionMode>
+      <MSM>
+        <security>
+          <authEncryption>
+            <authentication>WPA2PSK</authentication>
+            <encryption>AES</encryption>
+            <useOneX>false</useOneX>
+          </authEncryption>
+          <sharedKey>
+            <keyType>passPhrase</keyType>
+            <protected>false</protected>
+            <keyMaterial>$password</keyMaterial>
+          </sharedKey>
+        </security>
+      </MSM>
+    </WLANProfile>
+    "@
+    $profileXml | Out-File "$env:TEMP\wifi_profile.xml"
+    netsh wlan add profile filename="$env:TEMP\wifi_profile.xml"
+    Remove-Item "$env:TEMP\wifi_profile.xml"
+  args:
+    executable: powershell
+
+- name: Connect to Wi-Fi network
+  win_shell: |
+    $ssid = "{{ wifi_ssid }}"
+    netsh wlan connect name="$ssid"
+  args:
+    executable: powershell

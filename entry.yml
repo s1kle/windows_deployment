@@ -16,11 +16,20 @@
 
         - name: User setup
           ansible.builtin.include_tasks: tasks/environment/users.yml
+          vars:
+            user: "{{ username }}"
+            admin: "{{ admin_username }}"
 
         - name: Restrictions setup
           ansible.builtin.include_tasks: tasks/environment/restrictions.yml
           vars:
             user: "{{ username }}"
+
+        - name: Wifi setup
+          ansible.builtin.include_tasks: tasks/environment/wifi.yml
+          vars:
+            wifi_ssid: "{{ wifi.ssid }}"
+            wifi_password: "{{ wifi.password }}"
 
     - name: Reboot
       ansible.builtin.include_tasks: tasks/utils/reboot.yml

@@ -18,23 +18,12 @@
       DestinationPath: "{{ path }}"
   loop: "{{ packages }}"
   when:
-    - item.checked
-    - item.type == 'win_powershell'
-
+    - item.value.checked
+    - item.value.type == 'win_powershell'
 - name: Install packages
-  ansible.windows.win_powershell:
+  ansible.windows.win_shell: "{{ item.value.script }}"
+  args:
     chdir: "{{ path }}/{{ item.key }}"
-    script: |
-      [CmdletBinding()]
-      param (
-        [String]$File,
-        [String]$Arguments
-      )
-
-      Powershell.exe -ExecutionPolicy Bypass -File $File $Arguments
-    parameters:
-      File: "{{ item.value.script }}"
-      Arguments: "{{ item.value.arguments }}"
   loop: "{{ packages }}"
   when:
     - item.value.checked
