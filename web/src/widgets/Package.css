@@ -1,0 +1,9 @@
+.package {
+  width: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid white;
+  border-radius: 10px;
+}
