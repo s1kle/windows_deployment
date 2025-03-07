@@ -1,4 +1,5 @@
 ansible
 pypsrp
+fastapi[all]
 questionary
 pyyaml

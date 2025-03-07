@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import os
 import subprocess
 import questionary as q
 
@@ -48,5 +49,8 @@ for package in environment['pkgs']:
 print('Сохранение', environment_file)
 save_yaml(environment_file, environment)
 
+env = os.environ.copy()
+env['ANSIBLE_DISPLAY_SKIPPED_HOSTS'] = 'False'
+
 print('Запуск', entry_filename)
-subprocess.run(['ansible-playbook', '-i', inventory_file, entry_filename])
+subprocess.run(['ansible-playbook', '-i', inventory_file, entry_filename], env=env)
